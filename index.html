@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的个人主页</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 卡片悬浮动画 */
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 text-gray-800 min-h-screen flex flex-col">
+
+    <!-- 导航栏 -->
+    <header class="bg-white/70 backdrop-blur-md shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1
+                class="text-2xl font-extrabold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+                我的主页
+            </h1>
+            <nav class="space-x-6 text-lg font-medium">
+                <a href="#about" class="hover:text-blue-600 transition">关于我</a>
+                <a href="#projects" class="hover:text-blue-600 transition">作品</a>
+                <a href="#contact" class="hover:text-blue-600 transition">联系</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 自我介绍 -->
+    <section id="about" class="max-w-6xl mx-auto px-4 py-20 text-center">
+        <img src="./pic/avatar1.webp" alt="avatar"
+            class="mx-auto w-36 h-36 rounded-full shadow-xl ring-4 ring-purple-300 mb-6">
+        <h2 class="text-4xl font-extrabold mb-4">你好，我是 <span class="text-purple-600">26ywzm</span></h2>
+        <p class="text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed">
+            一名热爱编程与分享的开发者，专注于 <span class="font-semibold text-blue-600">Web 开发</span> 与
+            <span class="font-semibold text-purple-600">社区建设</span>。欢迎来到我的个人展览页 🚀
+        </p>
+    </section>
+
+    <!-- 作品展示 -->
+    <section id="projects" class="py-20 bg-white/60 backdrop-blur-sm">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-extrabold text-center mb-12">✨ 我的作品</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+
+                <!-- 项目卡片 -->
+                <div class="card bg-white rounded-2xl p-6 shadow-md">
+                    <h3 class="text-xl font-bold mb-3">项目一</h3>
+                    <p class="text-gray-600 mb-4">社区服务网站</p>
+                    <a href="https://github.com/26ywzm/community-service" target="_blank"
+                        class="inline-block px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:opacity-90 transition">
+                        查看项目 →
+                    </a>
+                </div>
+
+                <div class="card bg-white rounded-2xl p-6 shadow-md">
+                    <h3 class="text-xl font-bold mb-3">项目二</h3>
+                    <p class="text-gray-600 mb-4">应用易控</p>
+                    <a href="https://github.com/26ywzm/AppControl" target="_blank"
+                        class="inline-block px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:opacity-90 transition">
+                        查看项目 →
+                    </a>
+                </div>
+
+                <div class="card bg-white rounded-2xl p-6 shadow-md">
+                    <h3 class="text-xl font-bold mb-3">项目三</h3>
+                    <p class="text-gray-600 mb-4">博客（目前没有修复成功）</p>
+                    <a href="https://github.com/26ywzm/26ywzm.github.io" target="_blank"
+                        class="inline-block px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:opacity-90 transition">
+                        查看项目 →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系方式 -->
+    <section id="contact" class="max-w-6xl mx-auto px-4 py-20 text-center">
+        <h2 class="text-3xl font-extrabold mb-6">📬 联系我</h2>
+        <p class="text-gray-700 mb-8">如果你想交流或合作，可以通过以下方式找到我：</p>
+        <div class="flex justify-center gap-8 text-lg font-medium">
+            <a href="24ywzm@gmail.com" class="hover:text-blue-600 transition">邮箱</a>
+            <a href="https://github.com/26ywzm" target="_blank" class="hover:text-blue-600 transition">GitHub</a>
+            <a href="https://twitter.com" target="_blank" class="hover:text-blue-600 transition">Twitter</a>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-white/70 backdrop-blur-md py-6 mt-auto text-center text-gray-500 text-sm">
+        © 2025 我的主页 | Powered by GitHub Pages
+    </footer>
+
+</body>
+
+</html>
