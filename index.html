@@ -2,104 +2,326 @@
 <html lang="zh">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的个人主页</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>26ywzm - 个人主页</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <style>
-        /* 卡片悬浮动画 */
-        .card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .animated-gradient {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
         }
 
-        .card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .cursor-glow {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+            z-index: 9999;
+            background: rgba(123, 31, 162, 0.4);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: 0.1s ease;
+            mix-blend-mode: screen;
+        }
+
+        .modern-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modern-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .skill-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #7c3aed, #3b82f6);
+            transform-origin: left;
+            transform: scaleX(0);
+            transition: transform 1s ease;
+        }
+
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-circle {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #ffffff20;
+            border-top: 5px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
 
-<body class="bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 text-gray-800 min-h-screen flex flex-col">
+<body class="animated-gradient text-white min-h-screen">
+    <div class="cursor-glow"></div>
 
-    <!-- 导航栏 -->
-    <header class="bg-white/70 backdrop-blur-md shadow-md sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-            <h1
-                class="text-2xl font-extrabold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-                我的主页
+    <!-- 导航 -->
+    <header class="bg-white/10 backdrop-blur-md border-b border-white/20 fixed top-0 w-full z-50">
+        <div class="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center">
+            <h1 class="text-2xl font-black">
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-blue-500">26ywzm</span>
             </h1>
-            <nav class="space-x-6 text-lg font-medium">
-                <a href="#about" class="hover:text-blue-600 transition">关于我</a>
-                <a href="#projects" class="hover:text-blue-600 transition">作品</a>
-                <a href="#contact" class="hover:text-blue-600 transition">联系</a>
-            </nav>
+            <div class="flex items-center gap-8">
+                <nav class="space-x-8 text-white/90 text-lg font-medium">
+                    <a href="#about" class="hover:text-white">关于</a>
+                    <a href="#blog" class="hover:text-white">博客</a>
+                    <a href="#contact" class="hover:text-white">联系</a>
+                </nav>
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-white/10">
+                    <svg class="w-6 h-6 theme-light hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <svg class="w-6 h-6 theme-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+            </div>
         </div>
     </header>
 
-    <!-- 自我介绍 -->
-    <section id="about" class="max-w-6xl mx-auto px-4 py-20 text-center">
-        <img src="./pic/avatar1.webp" alt="avatar"
-            class="mx-auto w-36 h-36 rounded-full shadow-xl ring-4 ring-purple-300 mb-6">
-        <h2 class="text-4xl font-extrabold mb-4">你好，我是 <span class="text-purple-600">26ywzm</span></h2>
-        <p class="text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed">
-            一名热爱编程与分享的开发者，专注于 <span class="font-semibold text-blue-600">Web 开发</span> 与
-            <span class="font-semibold text-purple-600">社区建设</span>。欢迎来到我的个人展览页 🚀
+    <!-- 关于我（PC 全屏，滚动继续） -->
+    <section id="about" class="min-h-screen flex flex-col justify-center items-center text-center px-6">
+        <img src="./pic/avatar1.webp" alt="avatar" class="w-36 h-36 rounded-full shadow-xl ring-4 ring-white/20 mb-6"
+            data-aos="fade-down" />
+        <h2 class="text-5xl font-extrabold mb-4" data-aos="fade-up">
+            Hi, I'm <span
+                class="typewriter bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-blue-500"></span>
+        </h2>
+        <p class="text-lg text-white/80 max-w-2xl leading-relaxed" data-aos="fade-up" data-aos-delay="200">
+            一名充满创造力的开发者，专注于打造优雅的用户体验与高效的技术方案。
         </p>
+
+        <!-- 向下提示箭头 -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-white/60">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+        </div>
     </section>
 
-    <!-- 作品展示 -->
-    <section id="projects" class="py-20 bg-white/60 backdrop-blur-sm">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-3xl font-extrabold text-center mb-12">✨ 我的作品</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+    <!-- 博客 -->
+    <section id="blog" class="max-w-6xl mx-auto px-6 py-32">
+        <h2 class="text-4xl font-black text-center mb-12" data-aos="fade-up">📚 最新文章</h2>
 
-                <!-- 项目卡片 -->
-                <div class="card bg-white rounded-2xl p-6 shadow-md">
-                    <h3 class="text-xl font-bold mb-3">项目一</h3>
-                    <p class="text-gray-600 mb-4">社区服务网站</p>
-                    <a href="https://github.com/26ywzm/community-service" target="_blank"
-                        class="inline-block px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:opacity-90 transition">
-                        查看项目 →
-                    </a>
-                </div>
-
-                <div class="card bg-white rounded-2xl p-6 shadow-md">
-                    <h3 class="text-xl font-bold mb-3">项目二</h3>
-                    <p class="text-gray-600 mb-4">应用易控</p>
-                    <a href="https://github.com/26ywzm/AppControl" target="_blank"
-                        class="inline-block px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:opacity-90 transition">
-                        查看项目 →
-                    </a>
-                </div>
-
-                <div class="card bg-white rounded-2xl p-6 shadow-md">
-                    <h3 class="text-xl font-bold mb-3">项目三</h3>
-                    <p class="text-gray-600 mb-4">博客（目前没有修复成功）</p>
-                    <a href="https://github.com/26ywzm/26ywzm.github.io" target="_blank"
-                        class="inline-block px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:opacity-90 transition">
-                        查看项目 →
-                    </a>
-                </div>
+        <!-- 搜索框 -->
+        <div class="mb-8">
+            <div class="relative max-w-xl mx-auto">
+                <input type="text" id="search"
+                    class="w-full px-4 py-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 focus:outline-none focus:border-white/40"
+                    placeholder="搜索文章...">
+                <svg class="w-6 h-6 absolute right-4 top-1/2 -translate-y-1/2 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
             </div>
         </div>
-    </section>
 
-    <!-- 联系方式 -->
-    <section id="contact" class="max-w-6xl mx-auto px-4 py-20 text-center">
-        <h2 class="text-3xl font-extrabold mb-6">📬 联系我</h2>
-        <p class="text-gray-700 mb-8">如果你想交流或合作，可以通过以下方式找到我：</p>
-        <div class="flex justify-center gap-8 text-lg font-medium">
-            <a href="24ywzm@gmail.com" class="hover:text-blue-600 transition">邮箱</a>
-            <a href="https://github.com/26ywzm" target="_blank" class="hover:text-blue-600 transition">GitHub</a>
-            <a href="https://twitter.com" target="_blank" class="hover:text-blue-600 transition">Twitter</a>
+        <div class="space-y-8">
+            <article class="modern-card rounded-2xl p-6 md:p-8 cursor-pointer" data-aos="fade-up"
+                onclick="location.href='./posts/web-development-2025.html'">
+                <div class="flex flex-col md:flex-row justify-between items-start gap-4">
+                    <div>
+                        <div class="text-sm text-white/60 mb-2">2025-08-25 • Web开发</div>
+                        <h3 class="text-2xl font-bold mb-2">现代Web开发趋势探索</h3>
+                        <p class="text-white/70 mb-4">探讨2025年Web开发的最新趋势与性能优化技术...</p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-3 py-1 bg-white/10 rounded-full text-sm">#JavaScript</span>
+                            <span class="px-3 py-1 bg-white/10 rounded-full text-sm">#前端</span>
+                        </div>
+                    </div>
+                    <img src="./images/web-trend.jpg" alt=""
+                        class="w-full md:w-48 h-32 md:h-48 object-cover rounded-xl" />
+                </div>
+            </article>
+            <!-- 更多文章可按此格式添加 -->
         </div>
     </section>
 
-    <!-- 页脚 -->
-    <footer class="bg-white/70 backdrop-blur-md py-6 mt-auto text-center text-gray-500 text-sm">
-        © 2025 我的主页 | Powered by GitHub Pages
+    <!-- 联系 -->
+    <section id="contact" class="max-w-lg mx-auto text-center py-20 px-6">
+        <h2 class="text-3xl font-extrabold mb-6" data-aos="fade-up">📬 联系我</h2>
+        <p class="mb-8 text-white/80" data-aos="fade-up" data-aos-delay="100">
+            欢迎邮件或 GitHub 私信交流！
+        </p>
+        <div class="flex justify-center gap-6" data-aos="fade-up" data-aos-delay="200">
+            <a href="mailto:24ywzm@gmail.com" class="modern-card px-6 py-3 rounded-xl hover:bg-white/20">✉️ 邮件</a>
+            <a href="https://github.com/26ywzm" target="_blank"
+                class="modern-card px-6 py-3 rounded-xl hover:bg-white/20">GitHub</a>
+        </div>
+    </section>
+
+    <footer class="text-center py-6 text-white/60 text-sm">
+        © 2025 26ywzm | 用代码构建梦想
     </footer>
 
+    <div class="loader hidden">
+        <div class="loader-circle"></div>
+    </div>
+
+    <!-- 返回顶部按钮 -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 opacity-0 transition-opacity duration-300">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+    </button>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+
+        // 鼠标跟随
+        document.addEventListener('mousemove', e => {
+            const cursor = document.querySelector('.cursor-glow');
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // 打字机
+        const typewriter = document.querySelector('.typewriter');
+        const text = '26ywzm';
+        let i = 0;
+        function type() {
+            if (i < text.length) {
+                typewriter.textContent += text.charAt(i++);
+                setTimeout(type, 200);
+            }
+        }
+        type();
+
+        // 技能条动画
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.transform = `scaleX(${getComputedStyle(entry.target).getPropertyValue('--w')})`;
+                }
+            });
+        });
+        document.querySelectorAll('.skill-progress').forEach(bar => observer.observe(bar));
+
+        // 模拟加载
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader');
+            loader.classList.add('hidden');
+        });
+
+        // 返回顶部按钮
+        const backToTopButton = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.remove('opacity-0');
+            } else {
+                backToTopButton.classList.add('opacity-0');
+            }
+        });
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // 主题切换
+        const themeToggle = document.getElementById('theme-toggle');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+        const root = document.documentElement;
+
+        function setTheme(isDark) {
+            document.querySelector('.theme-light').classList.toggle('hidden', isDark);
+            document.querySelector('.theme-dark').classList.toggle('hidden', !isDark);
+            root.classList.toggle('dark', isDark);
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = !root.classList.contains('dark');
+            setTheme(isDark);
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+
+        // 页面加载
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader');
+            loader.classList.add('hidden');
+        });
+
+        // 返回顶部
+        const backToTop = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => {
+            backToTop.style.opacity = window.scrollY > 300 ? '1' : '0';
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // 文章搜索
+        const searchInput = document.getElementById('search');
+        const articles = document.querySelectorAll('#blog article');
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            articles.forEach(article => {
+                const title = article.querySelector('h3').textContent.toLowerCase();
+                const content = article.querySelector('p').textContent.toLowerCase();
+                const isVisible = title.includes(searchTerm) || content.includes(searchTerm);
+                article.style.display = isVisible ? 'block' : 'none';
+            });
+        });
+    </script>
 </body>
 
 </html>
