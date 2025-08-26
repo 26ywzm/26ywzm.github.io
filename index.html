@@ -5,8 +5,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>26ywzm - 个人主页</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <!-- 全局 Markdown 皮肤 -->
+    <link rel="stylesheet" href="css/markdown-style.css">
+
+    <!-- Prism 代码高亮 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <!-- Markdown & 安全 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.0/dist/purify.min.js"></script>
+
+    <!-- Tailwind Typography（可留可删） -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/typography@0.5.0/dist/typography.min.js"></script>
+
     <style>
         .animated-gradient {
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
@@ -54,27 +72,9 @@
             border-color: rgba(255, 255, 255, 0.4);
         }
 
-        .skill-bar {
-            height: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 999px;
-            overflow: hidden;
-        }
-
-        .skill-progress {
-            height: 100%;
-            background: linear-gradient(90deg, #7c3aed, #3b82f6);
-            transform-origin: left;
-            transform: scaleX(0);
-            transition: transform 1s ease;
-        }
-
         .loader {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background: #000;
             display: flex;
             justify-content: center;
@@ -107,12 +107,119 @@
             }
         }
     </style>
+
+    <!-- 阅读进度条 -->
+    <style>
+        #reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #7c3aed, #3b82f6);
+            z-index: 9999;
+            transition: width 0.2s;
+        }
+    </style>
+
+    <!-- 美化文章容器 -->
+    <style>
+        #markdown-container {
+            min-height: 100vh;
+            background: rgba(0, 0, 0, .25);
+            backdrop-filter: blur(20px);
+        }
+
+        #markdown-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem 6rem;
+        }
+
+        .md-header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: linear-gradient(135deg, #1e1e2f 0%, #2d1b69 100%);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+        }
+
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            max-width: 200px;
+            max-height: 60vh;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, .08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: .75rem;
+            padding: .75rem;
+            font-size: .875rem;
+            line-height: 1.4;
+            z-index: 25;
+        }
+
+        .toc a {
+            display: block;
+            color: rgba(255, 255, 255, .7);
+            margin: .25rem 0;
+            transition: color .2s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .toc a:hover,
+        .toc a.active {
+            color: #8b5cf6;
+        }
+
+        #md-back {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, .15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, .2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity .3s;
+            opacity: 0;
+            z-index: 30;
+        }
+
+        #md-back.visible {
+            opacity: 1;
+        }
+
+        pre[class*="language-"] {
+            border-radius: .75rem;
+            overflow-x: auto;
+        }
+
+        @media (max-width: 1024px) {
+            .toc {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body class="animated-gradient text-white min-h-screen">
+    <!-- 加载动画 -->
+    <div class="loader">
+        <div class="loader-circle"></div>
+    </div>
+
     <div class="cursor-glow"></div>
 
-    <!-- 导航 -->
     <header class="bg-white/10 backdrop-blur-md border-b border-white/20 fixed top-0 w-full z-50">
         <div class="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center">
             <h1 class="text-2xl font-black">
@@ -124,21 +231,11 @@
                     <a href="#blog" class="hover:text-white">博客</a>
                     <a href="#contact" class="hover:text-white">联系</a>
                 </nav>
-                <button id="theme-toggle" class="p-2 rounded-full hover:bg-white/10">
-                    <svg class="w-6 h-6 theme-light hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                    <svg class="w-6 h-6 theme-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
-                </button>
             </div>
         </div>
     </header>
 
-    <!-- 关于我（PC 全屏，滚动继续） -->
+    <!-- 主页区域 -->
     <section id="about" class="min-h-screen flex flex-col justify-center items-center text-center px-6">
         <img src="./pic/avatar1.webp" alt="avatar" class="w-36 h-36 rounded-full shadow-xl ring-4 ring-white/20 mb-6"
             data-aos="fade-down" />
@@ -149,8 +246,6 @@
         <p class="text-lg text-white/80 max-w-2xl leading-relaxed" data-aos="fade-up" data-aos-delay="200">
             一名充满创造力的开发者，专注于打造优雅的用户体验与高效的技术方案。
         </p>
-
-        <!-- 向下提示箭头 -->
         <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-white/60">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
@@ -158,25 +253,12 @@
         </div>
     </section>
 
-    <!-- 博客 -->
+    <!-- 博客区域 -->
     <section id="blog" class="max-w-6xl mx-auto px-6 py-32">
         <h2 class="text-4xl font-black text-center mb-12" data-aos="fade-up">📚 最新文章</h2>
-
-        <!-- 搜索框 -->
-        <div class="mb-8">
-            <div class="relative max-w-xl mx-auto">
-                <input type="text" id="search"
-                    class="w-full px-4 py-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 focus:outline-none focus:border-white/40"
-                    placeholder="搜索文章...">
-                <svg class="w-6 h-6 absolute right-4 top-1/2 -translate-y-1/2 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-            </div>
-        </div>
-
         <div class="space-y-8">
             <article class="modern-card rounded-2xl p-6 md:p-8 cursor-pointer" data-aos="fade-up"
-                onclick="location.href='./posts/web-development-2025.html'">
+                onclick="renderMarkdown('./posts/web-development-2025.md')">
                 <div class="flex flex-col md:flex-row justify-between items-start gap-4">
                     <div>
                         <div class="text-sm text-white/60 mb-2">2025-08-25 • Web开发</div>
@@ -187,15 +269,14 @@
                             <span class="px-3 py-1 bg-white/10 rounded-full text-sm">#前端</span>
                         </div>
                     </div>
-                    <img src="./images/web-trend.jpg" alt=""
+                    <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&q=60"
                         class="w-full md:w-48 h-32 md:h-48 object-cover rounded-xl" />
                 </div>
             </article>
-            <!-- 更多文章可按此格式添加 -->
         </div>
     </section>
 
-    <!-- 联系 -->
+    <!-- 联系区域 -->
     <section id="contact" class="max-w-lg mx-auto text-center py-20 px-6">
         <h2 class="text-3xl font-extrabold mb-6" data-aos="fade-up">📬 联系我</h2>
         <p class="mb-8 text-white/80" data-aos="fade-up" data-aos-delay="100">
@@ -212,115 +293,305 @@
         © 2025 26ywzm | 用代码构建梦想
     </footer>
 
-    <div class="loader hidden">
-        <div class="loader-circle"></div>
+    <!-- 阅读进度条 -->
+    <div id="reading-progress"></div>
+
+    <!-- 文章展示页 -->
+    <div id="markdown-container" class="hidden">
+        <!-- 顶部栏 -->
+        <header class="md-header flex items-center px-6 py-4">
+            <button onclick="closeMarkdown()" class="text-white/80 hover:text-white flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                返回
+            </button>
+            <h1 id="md-title" class="ml-4 text-lg font-bold"></h1>
+        </header>
+
+        <!-- 侧边目录 -->
+        <nav id="toc" class="toc"></nav>
+
+        <!-- 正文 -->
+        <article id="markdown-content" class="prose prose-invert max-w-none"></article>
+
+        <!-- 回到顶部 -->
+        <button id="md-back" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+            </svg>
+        </button>
     </div>
 
-    <!-- 返回顶部按钮 -->
-    <button id="back-to-top" class="fixed bottom-8 right-8 p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 opacity-0 transition-opacity duration-300">
+    <!-- 返回顶部按钮（主页） -->
+    <button id="back-to-top"
+        class="fixed bottom-8 right-8 p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 opacity-0 transition-opacity duration-300">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
         </svg>
     </button>
-
+    <!-- AOS 动画 -->
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
     <script>
         AOS.init({ duration: 1000, once: true });
 
         // 鼠标跟随
         document.addEventListener('mousemove', e => {
             const cursor = document.querySelector('.cursor-glow');
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
+            if (cursor) {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            }
         });
 
         // 打字机
         const typewriter = document.querySelector('.typewriter');
         const text = '26ywzm';
         let i = 0;
-        function type() {
-            if (i < text.length) {
+        (function type() {
+            if (typewriter && i < text.length) {
                 typewriter.textContent += text.charAt(i++);
                 setTimeout(type, 200);
             }
-        }
-        type();
+        })();
 
-        // 技能条动画
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.transform = `scaleX(${getComputedStyle(entry.target).getPropertyValue('--w')})`;
-                }
-            });
-        });
-        document.querySelectorAll('.skill-progress').forEach(bar => observer.observe(bar));
-
-        // 模拟加载
-        window.addEventListener('load', () => {
-            const loader = document.querySelector('.loader');
-            loader.classList.add('hidden');
-        });
-
-        // 返回顶部按钮
+        // 返回顶部（主页）
         const backToTopButton = document.getElementById('back-to-top');
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                backToTopButton.classList.remove('opacity-0');
-            } else {
-                backToTopButton.classList.add('opacity-0');
-            }
+            if (backToTopButton) backToTopButton.style.opacity = window.scrollY > 300 ? '1' : '0';
         });
-        backToTopButton.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+        backToTopButton?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-        // 主题切换
-        const themeToggle = document.getElementById('theme-toggle');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-        const root = document.documentElement;
-
-        function setTheme(isDark) {
-            document.querySelector('.theme-light').classList.toggle('hidden', isDark);
-            document.querySelector('.theme-dark').classList.toggle('hidden', !isDark);
-            root.classList.toggle('dark', isDark);
-        }
-
-        themeToggle.addEventListener('click', () => {
-            const isDark = !root.classList.contains('dark');
-            setTheme(isDark);
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        });
-
-        // 页面加载
+        // 模拟加载动画
         window.addEventListener('load', () => {
             const loader = document.querySelector('.loader');
-            loader.classList.add('hidden');
+            if (loader) loader.classList.add('hidden');
         });
 
-        // 返回顶部
-        const backToTop = document.getElementById('back-to-top');
+        // 阅读进度
+        function updateProgress() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const percent = Math.min((scrollTop / (docHeight || 1)) * 100, 100);
+            document.getElementById('reading-progress').style.width = percent + '%';
+        }
+        window.addEventListener('scroll', updateProgress);
+
+        // 文章页回到顶部按钮显隐
         window.addEventListener('scroll', () => {
-            backToTop.style.opacity = window.scrollY > 300 ? '1' : '0';
+            const btn = document.getElementById('md-back');
+            if (btn) btn.classList.toggle('visible', window.scrollY > 600);
         });
 
-        backToTop.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // 文章搜索
-        const searchInput = document.getElementById('search');
-        const articles = document.querySelectorAll('#blog article');
-
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            articles.forEach(article => {
-                const title = article.querySelector('h3').textContent.toLowerCase();
-                const content = article.querySelector('p').textContent.toLowerCase();
-                const isVisible = title.includes(searchTerm) || content.includes(searchTerm);
-                article.style.display = isVisible ? 'block' : 'none';
+        // ToC 高亮
+        window.addEventListener('scroll', () => {
+            const headings = document.querySelectorAll('#markdown-content h1, #markdown-content h2, #markdown-content h3');
+            const links = document.querySelectorAll('#toc a');
+            let current = '';
+            let lastTop = -Infinity;
+            headings.forEach(h => {
+                const rect = h.getBoundingClientRect();
+                if (rect.top <= 120 && rect.top > lastTop) {
+                    lastTop = rect.top;
+                    current = h.id;
+                }
             });
+            links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current));
         });
+
+        // 生成目录锚点
+        function buildToc() {
+            const toc = document.getElementById('toc');
+            if (!toc) return;
+            toc.innerHTML = '';
+            const headings = document.querySelectorAll('#markdown-content h1, #markdown-content h2, #markdown-content h3');
+            headings.forEach(h => {
+                if (!h.id) {
+                    h.id = h.textContent.trim().replace(/\s+/g, '-').toLowerCase();
+                }
+                const a = document.createElement('a');
+                a.href = '#' + h.id;
+                a.textContent = h.textContent;
+                a.style.paddingLeft = (parseInt(h.tagName[1], 10) - 1) * 0.75 + 'rem';
+                toc.appendChild(a);
+            });
+
+            // 目录内平滑滚动
+            toc.addEventListener('click', e => {
+                const a = e.target.closest('a');
+                if (!a) return;
+                e.preventDefault();
+                const id = decodeURIComponent(a.getAttribute('href').slice(1));
+                const el = document.getElementById(id);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    history.replaceState(null, '', '#' + id);
+                }
+            });
+        }
+
+        // Markdown 增强：外链、图片、表格、任务清单、Callout、标题锚点、复制按钮
+        function enhanceMarkdown() {
+            const root = document.getElementById('markdown-content');
+            if (!root) return;
+
+            // 外链新窗口 + 安全
+            root.querySelectorAll('a[href]').forEach(a => {
+                try {
+                    const url = new URL(a.getAttribute('href'), location.href);
+                    if (url.origin !== location.origin) {
+                        a.target = '_blank';
+                        a.rel = 'noopener';
+                    }
+                } catch (e) { /* ignore */ }
+            });
+
+            // 图片懒加载
+            root.querySelectorAll('img').forEach(img => {
+                img.loading = 'lazy';
+                img.decoding = 'async';
+                img.classList.add('md-img');
+            });
+
+            // 表格滚动包装
+            root.querySelectorAll('table').forEach(tbl => {
+                if (tbl.parentElement && tbl.parentElement.classList.contains('table-wrapper')) return;
+                const wrap = document.createElement('div');
+                wrap.className = 'table-wrapper';
+                tbl.parentNode.insertBefore(wrap, tbl);
+                wrap.appendChild(tbl);
+            });
+
+            // 任务清单禁用交互
+            root.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.disabled = true);
+
+            // 将 [!NOTE]/[!TIP]/[!WARNING]/[!IMPORTANT]/[!INFO] 转为 callout
+            root.querySelectorAll('blockquote').forEach(bq => {
+                const p = bq.querySelector('p');
+                if (!p) return;
+                const m = p.textContent.trim().match(/^\[\!(NOTE|TIP|WARNING|IMPORTANT|INFO)\]\s*/i);
+                if (!m) return;
+                const type = m[1].toLowerCase();
+
+                p.innerHTML = p.innerHTML.replace(/^\s*\[\!(?:NOTE|TIP|WARNING|IMPORTANT|INFO)\]\s*/i, '');
+
+                const div = document.createElement('div');
+                div.className = `callout callout-${type}`;
+                const title = document.createElement('div');
+                title.className = 'callout-title';
+                title.textContent = ({
+                    note: 'Note',
+                    tip: 'Tip',
+                    info: 'Info',
+                    warning: 'Warning',
+                    important: 'Important'
+                })[type] || 'Note';
+
+                div.appendChild(title);
+                while (bq.firstChild) div.appendChild(bq.firstChild);
+                bq.replaceWith(div);
+            });
+
+            // 标题锚点按钮
+            root.querySelectorAll('h1,h2,h3').forEach(h => {
+                if (!h.id) {
+                    h.id = h.textContent.trim().replace(/\s+/g, '-').toLowerCase();
+                }
+                if (!h.querySelector('.heading-anchor')) {
+                    const a = document.createElement('a');
+                    a.href = `#${h.id}`;
+                    a.className = 'heading-anchor';
+                    a.setAttribute('aria-label', 'Anchor');
+                    a.textContent = '#';
+                    h.appendChild(a);
+                }
+            });
+
+            // 代码复制按钮
+            root.querySelectorAll('pre > code').forEach(code => {
+                const pre = code.parentElement;
+                if (pre.querySelector('.copy-btn')) return;
+
+                const btn = document.createElement('button');
+                btn.className = 'copy-btn';
+                btn.type = 'button';
+                btn.textContent = 'Copy';
+                btn.addEventListener('click', async () => {
+                    try {
+                        await navigator.clipboard.writeText(code.textContent);
+                        btn.textContent = 'Copied!';
+                        setTimeout(() => btn.textContent = 'Copy', 1200);
+                    } catch {
+                        btn.textContent = 'Error';
+                        setTimeout(() => btn.textContent = 'Copy', 1200);
+                    }
+                });
+                pre.appendChild(btn);
+            });
+        }
+
+        // Marked 配置（GFM、标题 id）
+        if (window.marked) {
+            marked.setOptions({
+                gfm: true,
+                breaks: false,
+                headerIds: true,
+                mangle: false
+            });
+        }
+
+        // Prism Autoloader 配置
+        if (window.Prism && Prism.plugins && Prism.plugins.autoloader) {
+            Prism.plugins.autoloader.languages_path =
+                'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/';
+        }
+
+        // 渲染 MD
+        function renderMarkdown(mdPath) {
+            fetch(mdPath)
+                .then(res => {
+                    if (!res.ok) throw new Error("无法加载文档");
+                    return res.text();
+                })
+                .then(md => {
+                    const html = marked.parse(md);
+                    const clean = DOMPurify.sanitize(html);
+                    const contentEl = document.getElementById('markdown-content');
+                    contentEl.innerHTML = clean;
+
+                    // 标题（取第一行非空，去掉 # 前缀）
+                    const firstLine = (md.split('\n').find(l => l.trim().length) || '').trim();
+                    const title = firstLine.replace(/^#+\s*/, '').trim();
+                    document.getElementById('md-title').textContent = title || '文章';
+
+                    // 切换视图
+                    document.getElementById('markdown-container').classList.remove('hidden');
+                    document.getElementById('about').classList.add('hidden');
+                    document.getElementById('blog').classList.add('hidden');
+                    document.getElementById('contact').classList.add('hidden');
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+
+                    // 增强 + 高亮 + 目录
+                    enhanceMarkdown();
+                    Prism.highlightAll();
+                    buildToc();
+                    updateProgress();
+                })
+                .catch(err => {
+                    alert("加载失败：" + err.message);
+                });
+        }
+
+        function closeMarkdown() {
+            document.getElementById("markdown-container").classList.add("hidden");
+            document.getElementById("about").classList.remove("hidden");
+            document.getElementById("blog").classList.remove("hidden");
+            document.getElementById("contact").classList.remove("hidden");
+            const toc = document.getElementById('toc');
+            if (toc) toc.innerHTML = '';
+            history.replaceState(null, '', location.pathname + location.search);
+        }
     </script>
 </body>
 
