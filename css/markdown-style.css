@@ -1,0 +1,394 @@
+#markdown-content {
+  color: #e5e7eb;
+  line-height: 1.8;
+  font-size: 1.05rem;
+  word-break: break-word;
+}
+
+/* 让锚点滚动时不被顶部吸顶栏遮住 */
+#markdown-content h1,
+#markdown-content h2,
+#markdown-content h3,
+#markdown-content h4,
+#markdown-content h5,
+#markdown-content h6 {
+  scroll-margin-top: 96px;
+  position: relative;
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+
+/* 标题下划线点缀 */
+#markdown-content h2::after,
+#markdown-content h3::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  width: 56px;
+  height: 3px;
+  background: linear-gradient(90deg, #7c3aed, #3b82f6);
+  border-radius: 9999px;
+  opacity: .6;
+}
+
+/* 标题锚点按钮（#） */
+#markdown-content .heading-anchor {
+  opacity: 0;
+  margin-left: .5rem;
+  color: #a78bfa;
+  text-decoration: none;
+  font-weight: 700;
+  transition: opacity .2s, color .2s;
+  user-select: none;
+}
+
+#markdown-content h1:hover .heading-anchor,
+#markdown-content h2:hover .heading-anchor,
+#markdown-content h3:hover .heading-anchor {
+  opacity: 1;
+}
+
+#markdown-content .heading-anchor:hover {
+  color: #60a5fa;
+}
+
+/* 链接 */
+#markdown-content a {
+  color: #93c5fd;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color .2s;
+}
+
+#markdown-content a:hover {
+  color: #bfdbfe;
+}
+
+/* 图片/视频 */
+#markdown-content img,
+#markdown-content video {
+  max-width: 100%;
+  height: auto;
+  border-radius: .75rem;
+  border: 1px solid rgba(255, 255, 255, .12);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+  display: block;
+}
+
+#markdown-content img.md-img {
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+#markdown-content img.md-img:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .35);
+}
+
+/* 引用块（基础） */
+#markdown-content blockquote {
+  margin: 1rem 0;
+  padding: 1rem 1.25rem;
+  border-left: 4px solid #7c3aed;
+  background: rgba(255, 255, 255, .06);
+  backdrop-filter: blur(8px);
+  border-radius: .75rem;
+  color: #e9e9f1;
+}
+
+/* Callout（从 [!NOTE] 等语法转换） */
+#markdown-content .callout {
+  margin: 1rem 0;
+  padding: 1rem 1rem 1rem 1.1rem;
+  border-radius: .9rem;
+  border: 1px solid rgba(255, 255, 255, .12);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .04));
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .18);
+}
+
+#markdown-content .callout .callout-title {
+  font-weight: 700;
+  margin-bottom: .35rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  opacity: .95;
+}
+
+/* 不同类型颜色 */
+#markdown-content .callout-note {
+  border-left: 4px solid #60a5fa;
+}
+
+#markdown-content .callout-tip {
+  border-left: 4px solid #34d399;
+}
+
+#markdown-content .callout-info {
+  border-left: 4px solid #22d3ee;
+}
+
+#markdown-content .callout-warning {
+  border-left: 4px solid #f59e0b;
+}
+
+#markdown-content .callout-important {
+  border-left: 4px solid #f472b6;
+}
+
+/* 水平线 */
+#markdown-content hr {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, .0), rgba(255, 255, 255, .35), rgba(255, 255, 255, .0));
+  margin: 2rem 0;
+}
+
+/* 列表美化 */
+#markdown-content ul>li::marker {
+  color: #a78bfa;
+}
+
+#markdown-content ol>li::marker {
+  color: #93c5fd;
+}
+
+/* 任务清单 */
+#markdown-content input[type="checkbox"] {
+  appearance: none;
+  width: 1.05rem;
+  height: 1.05rem;
+  border: 1.5px solid rgba(255, 255, 255, .45);
+  border-radius: .35rem;
+  display: inline-grid;
+  place-content: center;
+  margin-right: .5rem;
+  transform: translateY(1px);
+  background: rgba(255, 255, 255, .03);
+}
+
+#markdown-content input[type="checkbox"]:checked {
+  border-color: #22c55e;
+  background: #22c55e;
+}
+
+#markdown-content input[type="checkbox"]:checked::after {
+  content: "✓";
+  color: #0b1620;
+  font-size: .85rem;
+  line-height: 1;
+}
+
+/* 表格 */
+#markdown-content .table-wrapper {
+  overflow: auto;
+  border-radius: .75rem;
+  border: 1px solid rgba(255, 255, 255, .12);
+  background: rgba(255, 255, 255, .04);
+  margin: 1rem 0;
+}
+
+#markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 560px;
+}
+
+#markdown-content th,
+#markdown-content td {
+  padding: .75rem .9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+#markdown-content thead th {
+  position: sticky;
+  top: 0;
+  background: rgba(255, 255, 255, .06);
+  color: #e8e8ff;
+  text-align: left;
+  font-weight: 700;
+}
+
+#markdown-content tbody tr:hover {
+  background: rgba(255, 255, 255, .03);
+}
+
+/* 代码块与内联代码 /
+#markdown-content code {
+background: rgba(255,255,255,.08);
+padding: .15rem .35rem;
+border-radius: .4rem;
+border: 1px solid rgba(255,255,255,.12);
+}
+#markdown-content pre[class="language-"] {
+position: relative;
+border-radius: .9rem;
+border: 1px solid rgba(255,255,255,.12);
+background: linear-gradient(180deg, rgba(17, 24, 39, .85), rgba(17, 24, 39, .75));
+box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 16px 38px rgba(0,0,0,.28);
+}
+/* 代码复制按钮 */
+#markdown-content .copy-btn {
+  position: absolute;
+  top: .6rem;
+  right: .6rem;
+  padding: .35rem .55rem;
+  font-size: .75rem;
+  color: #d1d5db;
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: .45rem;
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s;
+}
+
+#markdown-content .copy-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, .14);
+  border-color: rgba(255, 255, 255, .28);
+}
+
+/* 详情/折叠 */
+#markdown-content details {
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: .8rem;
+  background: rgba(255, 255, 255, .05);
+  padding: .6rem .9rem;
+  margin: 1rem 0;
+}
+
+#markdown-content summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: #eae9ff;
+  list-style: none;
+}
+
+#markdown-content summary::-webkit-details-marker {
+  display: none;
+}
+
+#markdown-content summary::after {
+  content: "›";
+  float: right;
+  transition: transform .2s;
+  opacity: .8;
+}
+
+#markdown-content details[open] summary::after {
+  transform: rotate(90deg);
+}
+
+/* 键盘键 */
+#markdown-content kbd {
+  background: #0b1220;
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-bottom-width: 3px;
+  padding: .2rem .35rem;
+  border-radius: .4rem;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, .06);
+  font-size: .85em;
+}
+
+/* 提示徽章（可选） */
+#markdown-content .badge {
+  display: inline-block;
+  padding: .15rem .5rem;
+  border-radius: .5rem;
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255, 255, 255, .14);
+  font-size: .75rem;
+}
+
+/* ===== Text Typography Enhancements ===== */
+/* 全局更顺滑的文字渲染 */
+#markdown-content {
+  font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, MiSans, "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", Arial, "Helvetica Neue", sans-serif;
+  font-kerning: normal;
+  font-variant-ligatures: contextual common-ligatures;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 段落基础间距 */
+#markdown-content p {
+  margin: 0.9rem 0 1rem;
+  letter-spacing: 0.1px;
+}
+
+/* 首段“引言”样式（自动添加 .lead） */
+#markdown-content p.lead {
+  font-size: 1.18rem;
+  line-height: 1.95;
+  color: #f3f4f6;
+  opacity: 0.95;
+}
+
+/* 首段下沉首字效果（中文/英文均可用） */
+#markdown-content p.lead::first-letter {
+  float: left;
+  font-size: 3.1rem;
+  line-height: 1;
+  font-weight: 800;
+  margin: 0.15rem 0.5rem 0 0;
+  color: #c7b8ff;
+  text-shadow: 0 6px 18px rgba(139, 92, 246, .35);
+}
+
+/* 强调/斜体更显眼一些 */
+#markdown-content strong {
+  color: #e9dcff;
+  font-weight: 800;
+}
+
+#markdown-content em {
+  color: #c7e1ff;
+}
+
+/* 内联高亮（支持 <mark> 或 ==文本== 语法转换后的 mark） */
+#markdown-content mark {
+  background: linear-gradient(90deg, rgba(125, 76, 219, .28), rgba(59, 130, 246, .26));
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: .35rem;
+  padding: .05rem .25rem;
+  color: #f8fafc;
+}
+
+/* 渐变文字（手动用 <span class="text-gradient">内容</span>） */
+#markdown-content .text-gradient {
+  background: linear-gradient(90deg, #a78bfa, #60a5fa, #34d399);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 弱化文本：<span class="muted">... </span> 或 <small class="muted">... */
+#markdown-content .muted,
+#markdown-content small.muted {
+  color: rgba(255, 255, 255, .65);
+}
+
+/* 更好看的文字选区颜色 */
+#markdown-content ::selection {
+  background: rgba(124, 58, 237, .35);
+  color: #fff;
+}
+
+/* 行内代码与文本的垂直对齐更自然 */
+#markdown-content p>code {
+  vertical-align: baseline;
+}
+
+/* ===== Emoji/图标对齐（可选） ===== */
+#markdown-content p,
+#markdown-content li {
+  line-height: 1.9;
+}
+
+#markdown-content img.emoji,
+#markdown-content .emoji {
+  height: 1em;
+  width: 1em;
+  vertical-align: -0.1em;
+}
